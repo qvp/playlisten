@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Содержание плейлиста</title>
+    <script src="lessons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 1135px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #e0e0e0;
+        }
+
+        .nav-link.active {
+            background: #0366d6;
+            color: white;
+        }
+
+        .lessons-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 15px 20px;
+            background: #fafafa;
+            border-bottom: 1px solid #eaeaea;
+            overflow-x: auto;
+        }
+
+        .lesson-number {
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .lesson-number:hover {
+            background: #e0e0e0;
+        }
+
+        .lesson-number.active {
+            background: #0366d6;
+            color: white;
+        }
+
+        .content {
+            padding: 25px;
+            min-height: 400px;
+        }
+
+        .github-button {
+            height: 30px;
+        }
+
+        .markdown-content {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .markdown-content h1 {
+            padding-bottom: 0.3em;
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+        }
+
+        .markdown-content code {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            background-color: rgba(27, 31, 35, 0.05);
+            border-radius: 3px;
+            padding: 0.2em 0.4em;
+            font-size: 85%;
+        }
+
+        .markdown-content pre {
+            background-color: #f6f8fa;
+            border-radius: 3px;
+            padding: 16px;
+            overflow: auto;
+            line-height: 1.45;
+        }
+
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .github-stars {
+            height: 25px;
+        }
+
+        blockquote {
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 30px;
+        }
+
+        @media (max-width: 1240px) {
+            .container {
+                margin: 0 20px;
+                width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-header">
+            <div class="nav-links">
+                <a href="#A0" class="nav-link active" data-level="A0">A0</a>
+                <a href="#A1" class="nav-link" data-level="A1">A1</a>
+<!--                <a href="#A2" class="nav-link" data-level="A2">A2</a>-->
+<!--                <a href="#B1" class="nav-link" data-level="B1">B1</a>-->
+<!--                <a href="#B2" class="nav-link" data-level="B2">B2</a>-->
+<!--                <a href="#C1" class="nav-link" data-level="C1">C1</a>-->
+            </div>
+            <div class="github-button">
+                <a href="https://github.com/qvp/playlisten" target="_blank">
+                    <img src="https://img.shields.io/github/stars/qvp/playlisten?style=social&logoScale=2" alt="GitHub Stars" class="github-stars">
+                </a>
+            </div>
+        </div>
+
+        <div class="lessons-row" id="lessons-container">
+            <!-- Уроки будут добавлены через JavaScript -->
+        </div>
+
+        <div class="content">
+            <div id="markdown-content" class="markdown-content">
+                <!-- Markdown контент будет загружен здесь -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация данных
+        const currentState = {
+            level: 'A0',
+            lesson: 1
+        };
+
+        // Генерация номеров уроков
+        const lessonsContainer = document.getElementById('lessons-container');
+        for (let i = 1; i <= 50; i++) {
+            const lessonElement = document.createElement('div');
+            lessonElement.className = `lesson-number ${i === 1 ? 'active' : ''}`;
+            lessonElement.textContent = i;
+            lessonElement.dataset.lesson = i;
+            lessonElement.addEventListener('click', () => {
+                loadLesson(i);
+                updateUrl(i);
+            });
+            lessonsContainer.appendChild(lessonElement);
+        }
+
+        // Обработчики для уровней
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentState.level = this.dataset.level;
+
+                // Обновляем активные элементы
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+
+                // Загружаем первый урок нового уровня
+                loadLesson(1);
+                updateUrl(1);
+            });
+        });
+
+        // Функция обновления URL
+        function updateUrl(lessonNumber) {
+            const newUrl = `${window.location.pathname}#${currentState.level}-lesson-${lessonNumber}`;
+            window.history.pushState({}, '', newUrl);
+        }
+
+        // Функция загрузки урока
+        function loadLesson(lessonNumber) {
+            currentState.lesson = lessonNumber;
+
+            // Обновляем активный урок
+            document.querySelectorAll('.lesson-number').forEach(el => {
+                el.classList.toggle('active', parseInt(el.dataset.lesson) === lessonNumber);
+            });
+
+            // Здесь должен быть запрос к серверу за Markdown-файлом
+            // Для примера используем заглушку
+            const markdownContent = lessons[ currentState.level + '-' + lessonNumber ]
+            console.log(markdownContent, currentState.level + '-' + lessonNumber)
+
+            // Рендерим Markdown
+            document.getElementById('markdown-content').innerHTML = marked.parse(markdownContent);
+        }
+
+        // Функция парсинга якоря из URL
+        function parseAnchor() {
+            const hash = window.location.hash;
+            if (!hash) return;
+
+            // Формат: #A0-lesson-1
+            const match = hash.match(/^#([A-Z]\d+)-lesson-(\d+)$/);
+            if (match) {
+                const level = match[1];
+                const lessonNumber = parseInt(match[2]);
+
+                // Устанавливаем уровень
+                const levelLink = document.querySelector(`.nav-link[data-level="${level}"]`);
+                if (levelLink) {
+                    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                    levelLink.classList.add('active');
+                    currentState.level = level;
+                }
+
+                // Загружаем урок
+                if (lessonNumber >= 1 && lessonNumber <= 50) {
+                    loadLesson(lessonNumber);
+                }
+            }
+        }
+
+        // Обработчик изменения URL
+        window.addEventListener('hashchange', parseAnchor);
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            parseAnchor(); // Проверяем якорь при загрузке
+            if (!window.location.hash) {
+                loadLesson(1); // Загружаем первый урок, если нет якоря
+            }
+        });
+    </script>
+</body>
+</html>
